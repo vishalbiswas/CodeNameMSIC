@@ -53,7 +53,7 @@ namespace CodeNameMSIC
 		private void next(object sender, EventArgs e)
 		{
 			if (current == file.FileNames.Length-1) current = 0;
-			else current++;
+			else ++current;
 			stop(new object(), new EventArgs());
 			try
 			{
@@ -97,7 +97,7 @@ namespace CodeNameMSIC
 		private void previous(object sender, EventArgs e)
 		{
 			if (current == 0) current = file.FileNames.Length - 1;
-			else current--;
+			else --current;
 			stop(new object(), new EventArgs());
 			try
 			{
