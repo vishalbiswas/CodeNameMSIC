@@ -75,6 +75,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -85,6 +86,66 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006175_208035.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006200_208024.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006207_208023.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006213_208018.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006217_208034.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006220_208039.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006226_208014.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006230_208019.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006239_208025.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006242_208017.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006246_208022.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006257_208012.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006267_208040.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006272_208036.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006278_208013.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006282_208015.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006291_208016.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006297_208033.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006305_208041.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1428006311_208021.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
