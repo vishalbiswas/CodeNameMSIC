@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.seek = new System.Windows.Forms.TrackBar();
 			this.ppbut = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
@@ -45,7 +46,7 @@
 			// seek
 			// 
 			this.seek.Enabled = false;
-			this.seek.Location = new System.Drawing.Point(176, 240);
+			this.seek.Location = new System.Drawing.Point(212, 402);
 			this.seek.Maximum = 100;
 			this.seek.Name = "seek";
 			this.seek.Orientation = System.Windows.Forms.Orientation.Vertical;
@@ -58,7 +59,7 @@
 			// 
 			this.ppbut.Enabled = false;
 			this.ppbut.Image = global::CodeNameMSIC.Properties.Resources._1428006213_208018;
-			this.ppbut.Location = new System.Drawing.Point(67, 225);
+			this.ppbut.Location = new System.Drawing.Point(76, 416);
 			this.ppbut.Name = "ppbut";
 			this.ppbut.Size = new System.Drawing.Size(40, 40);
 			this.ppbut.TabIndex = 2;
@@ -69,7 +70,7 @@
 			// 
 			this.button3.Enabled = false;
 			this.button3.Image = global::CodeNameMSIC.Properties.Resources._1428006226_208014;
-			this.button3.Location = new System.Drawing.Point(67, 271);
+			this.button3.Location = new System.Drawing.Point(76, 462);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(40, 40);
 			this.button3.TabIndex = 3;
@@ -79,7 +80,7 @@
 			// button1
 			// 
 			this.button1.Image = global::CodeNameMSIC.Properties.Resources._1428006297_208033;
-			this.button1.Location = new System.Drawing.Point(67, 179);
+			this.button1.Location = new System.Drawing.Point(76, 370);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(40, 40);
 			this.button1.TabIndex = 4;
@@ -95,7 +96,7 @@
 			// volumeT
 			// 
 			this.volumeT.Enabled = false;
-			this.volumeT.Location = new System.Drawing.Point(227, 271);
+			this.volumeT.Location = new System.Drawing.Point(241, 433);
 			this.volumeT.Name = "volumeT";
 			this.volumeT.Size = new System.Drawing.Size(36, 23);
 			this.volumeT.TabIndex = 5;
@@ -105,7 +106,7 @@
 			// 
 			this.album.Location = new System.Drawing.Point(13, 13);
 			this.album.Name = "album";
-			this.album.Size = new System.Drawing.Size(154, 135);
+			this.album.Size = new System.Drawing.Size(316, 316);
 			this.album.TabIndex = 6;
 			this.album.TabStop = false;
 			// 
@@ -113,7 +114,7 @@
 			// 
 			this.nbut.Enabled = false;
 			this.nbut.Image = global::CodeNameMSIC.Properties.Resources._1428006282_208015;
-			this.nbut.Location = new System.Drawing.Point(113, 225);
+			this.nbut.Location = new System.Drawing.Point(122, 416);
 			this.nbut.Name = "nbut";
 			this.nbut.Size = new System.Drawing.Size(40, 40);
 			this.nbut.TabIndex = 2;
@@ -124,7 +125,7 @@
 			// 
 			this.pbut.Enabled = false;
 			this.pbut.Image = global::CodeNameMSIC.Properties.Resources._1428006291_208016;
-			this.pbut.Location = new System.Drawing.Point(22, 225);
+			this.pbut.Location = new System.Drawing.Point(31, 416);
 			this.pbut.Name = "pbut";
 			this.pbut.Size = new System.Drawing.Size(40, 40);
 			this.pbut.TabIndex = 2;
@@ -135,10 +136,10 @@
 			// 
 			this.playlist.AllowDrop = true;
 			this.playlist.FormattingEnabled = true;
-			this.playlist.Location = new System.Drawing.Point(176, 13);
+			this.playlist.Location = new System.Drawing.Point(335, 12);
 			this.playlist.Name = "playlist";
 			this.playlist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.playlist.Size = new System.Drawing.Size(141, 134);
+			this.playlist.Size = new System.Drawing.Size(305, 537);
 			this.playlist.TabIndex = 9;
 			this.playlist.DoubleClick += new System.EventHandler(this.change);
 			// 
@@ -146,7 +147,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(952, 543);
+			this.ClientSize = new System.Drawing.Size(652, 566);
 			this.Controls.Add(this.playlist);
 			this.Controls.Add(this.album);
 			this.Controls.Add(this.volumeT);
@@ -156,8 +157,9 @@
 			this.Controls.Add(this.nbut);
 			this.Controls.Add(this.ppbut);
 			this.Controls.Add(this.seek);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form1";
-			this.Text = "MSIC";
+			this.Text = "Music Player";
 			((System.ComponentModel.ISupportInitialize)(this.seek)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.album)).EndInit();
 			this.ResumeLayout(false);

@@ -58,40 +58,52 @@ namespace CodeNameMSIC
 							files.Add(fileN);
 						}
 					}
-					if (waveOutDevice.PlaybackState==PlaybackState.Stopped)
+					if (waveOutDevice.PlaybackState == PlaybackState.Stopped)
 					{
-						audioFileReader = new AudioFileReader(files.ToArray()[current]);
-						TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
-						if (f.Tag.Title != null) Text = f.Tag.Title;
-						else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
-						if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-						waveOutDevice.Init(audioFileReader);
+						initAudio();
 						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
 					}
 				}
-				catch { }
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					files.RemoveAt(current);
+					playlist.Items.RemoveAt(current);
+					if (current > 0) --current;
+				}
 			}
         }
 
+		private void initAudio()
+		{
+			audioFileReader = new AudioFileReader(files.ToArray()[current]);
+			TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+			if (f.Tag.Title != null) Text = f.Tag.Title + " - Music Player";
+			else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1) + " - Music Player";
+			if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+			waveOutDevice.Init(audioFileReader);
+		}
+
 		private void next(object sender, EventArgs e)
 		{
-			if (current == files.ToArray().Length-1) current = 0;
+			if (current == files.ToArray().Length - 1) current = 0;
 			else ++current;
 			stop(new object(), new EventArgs());
 			try
 			{
-				audioFileReader = new AudioFileReader(files.ToArray()[current]);
-				TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
-				if (f.Tag.Title != null) Text = f.Tag.Title;
-				else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
-				if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-				waveOutDevice.Init(audioFileReader);
+				initAudio();
 				play(new object(), new EventArgs());
 			}
-			catch { }
+			catch (Exception err)
+			{
+				MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+				files.RemoveAt(current);
+				playlist.Items.RemoveAt(current);
+				if (current > 0) --current;
+			}
 		}
 
-        private void play(object sender, EventArgs e)
+		private void play(object sender, EventArgs e)
         {
             if (waveOutDevice.PlaybackState == NAudio.Wave.PlaybackState.Playing)
             {
@@ -131,15 +143,16 @@ namespace CodeNameMSIC
 			stop(new object(), new EventArgs());
 			try
 			{
-				audioFileReader = new AudioFileReader(files.ToArray()[current]);
-				TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
-				if (f.Tag.Title != null) Text = f.Tag.Title;
-				else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
-				if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-				waveOutDevice.Init(audioFileReader);
+				initAudio();
 				play(new object(), new EventArgs());
 			}
-			catch { }
+			catch (Exception err)
+			{
+				MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+				files.RemoveAt(current);
+				playlist.Items.RemoveAt(current);
+				if (current > 0) --current;
+			}
 		}
 
 		private void change(object sender, EventArgs e)
@@ -150,15 +163,16 @@ namespace CodeNameMSIC
 				stop(new object(), new EventArgs());
 				try
 				{
-					audioFileReader = new AudioFileReader(files.ToArray()[current]);
-					TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
-					if (f.Tag.Title != null) Text = f.Tag.Title;
-					else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
-					if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-					waveOutDevice.Init(audioFileReader);
+					initAudio();
 					play(new object(), new EventArgs());
 				}
-				catch { }
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					files.RemoveAt(current);
+					playlist.Items.RemoveAt(current);
+					if (current > 0) --current;
+				}
 			}
 		}
 	}
