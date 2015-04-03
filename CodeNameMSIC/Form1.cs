@@ -18,12 +18,13 @@ namespace CodeNameMSIC
         IWavePlayer waveOutDevice = new WaveOut();
         AudioFileReader audioFileReader;
 		int current = 0;
-		string[] files;
+		List<string> files = new List<string>();
 
         public Form1()
         {
             InitializeComponent();
             seek.Value = (int)(100*waveOutDevice.Volume);
+			waveOutDevice.PlaybackStopped += toggle;
         }
 
         private void open(object sender, EventArgs e)
@@ -31,20 +32,42 @@ namespace CodeNameMSIC
 			DialogResult res = file.ShowDialog();
 			if (res==DialogResult.OK)
 			{
-				files = file.FileNames;
 				try
 				{
-					foreach (string fileN in files)
+					if (files.Count > 0)
 					{
-						playlist.Items.Add(new ListViewItem(TagLib.File.Create(fileN).Tag.Title));
-
+						foreach (string fileN in file.FileNames)
+						{
+							for (int i = 0; i < files.Count; ++i)
+							{
+								if (fileN != files.ToArray()[i] && i == files.Count - 1)
+								{
+									playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
+									files.Add(fileN);
+								}
+								else if (fileN == files.ToArray()[i] || i == files.Count) break;
+							}
+						}
 					}
-					audioFileReader = new AudioFileReader(files[0]);
-					TagLib.File f = TagLib.File.Create(files[0]);
-					Text = f.Tag.Title;
-					album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-					waveOutDevice.Init(audioFileReader);
-					ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = true;
+					else
+					{
+						foreach (string fileN in file.FileNames)
+						{
+							if (TagLib.File.Create(fileN).Tag.Title != null) playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
+							else playlist.Items.Add(fileN.Substring(fileN.LastIndexOf('\\') + 1));
+							files.Add(fileN);
+						}
+					}
+					if (waveOutDevice.PlaybackState==PlaybackState.Stopped)
+					{
+						audioFileReader = new AudioFileReader(files.ToArray()[current]);
+						TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+						if (f.Tag.Title != null) Text = f.Tag.Title;
+						else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
+						if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+						waveOutDevice.Init(audioFileReader);
+						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
+					}
 				}
 				catch { }
 			}
@@ -52,15 +75,16 @@ namespace CodeNameMSIC
 
 		private void next(object sender, EventArgs e)
 		{
-			if (current == file.FileNames.Length-1) current = 0;
+			if (current == files.ToArray().Length-1) current = 0;
 			else ++current;
 			stop(new object(), new EventArgs());
 			try
 			{
-				audioFileReader = new AudioFileReader(files[current]);
-				TagLib.File f = TagLib.File.Create(files[current]);
-				Text = f.Tag.Title;
-				album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+				audioFileReader = new AudioFileReader(files.ToArray()[current]);
+				TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+				if (f.Tag.Title != null) Text = f.Tag.Title;
+				else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
+				if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
 				waveOutDevice.Init(audioFileReader);
 				play(new object(), new EventArgs());
 			}
@@ -81,6 +105,12 @@ namespace CodeNameMSIC
 			}
         }
 
+		private void toggle(object sender, EventArgs e)
+		{
+			audioFileReader.Position = 0;
+			ppbut.Image = Properties.Resources._1428006213_208018;
+		}
+
         private void stop(object sender, EventArgs e)
         {
             waveOutDevice.Stop();
@@ -96,19 +126,40 @@ namespace CodeNameMSIC
 
 		private void previous(object sender, EventArgs e)
 		{
-			if (current == 0) current = file.FileNames.Length - 1;
+			if (current == 0) current = files.ToArray().Length - 1;
 			else --current;
 			stop(new object(), new EventArgs());
 			try
 			{
-				audioFileReader = new AudioFileReader(files[current]);
-				TagLib.File f = TagLib.File.Create(files[current]);
-				Text = f.Tag.Title;
-				album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+				audioFileReader = new AudioFileReader(files.ToArray()[current]);
+				TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+				if (f.Tag.Title != null) Text = f.Tag.Title;
+				else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
+				if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
 				waveOutDevice.Init(audioFileReader);
 				play(new object(), new EventArgs());
 			}
 			catch { }
+		}
+
+		private void change(object sender, EventArgs e)
+		{
+			if (playlist.Items.Count > 0)
+			{
+				current = playlist.SelectedIndex;
+				stop(new object(), new EventArgs());
+				try
+				{
+					audioFileReader = new AudioFileReader(files.ToArray()[current]);
+					TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+					if (f.Tag.Title != null) Text = f.Tag.Title;
+					else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1);
+					if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+					waveOutDevice.Init(audioFileReader);
+					play(new object(), new EventArgs());
+				}
+				catch { }
+			}
 		}
 	}
 }

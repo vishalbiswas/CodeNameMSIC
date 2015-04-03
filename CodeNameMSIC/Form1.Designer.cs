@@ -35,16 +35,16 @@
 			this.file = new System.Windows.Forms.OpenFileDialog();
 			this.volumeT = new System.Windows.Forms.Label();
 			this.album = new System.Windows.Forms.PictureBox();
-			this.playlist = new System.Windows.Forms.ListView();
-			this.Title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.nbut = new System.Windows.Forms.Button();
 			this.pbut = new System.Windows.Forms.Button();
+			this.playlist = new System.Windows.Forms.ListBox();
 			((System.ComponentModel.ISupportInitialize)(this.seek)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.album)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// seek
 			// 
+			this.seek.Enabled = false;
 			this.seek.Location = new System.Drawing.Point(176, 240);
 			this.seek.Maximum = 100;
 			this.seek.Name = "seek";
@@ -88,13 +88,14 @@
 			// 
 			// file
 			// 
-			this.file.Filter = "MP3 files|*.mp3";
+			this.file.Filter = "Audio files|*.mp3;*.aac;*.wma;*.wav;*.m4a;";
 			this.file.Multiselect = true;
 			this.file.Title = "Select MP3 File";
 			// 
 			// volumeT
 			// 
-			this.volumeT.Location = new System.Drawing.Point(257, 273);
+			this.volumeT.Enabled = false;
+			this.volumeT.Location = new System.Drawing.Point(227, 271);
 			this.volumeT.Name = "volumeT";
 			this.volumeT.Size = new System.Drawing.Size(36, 23);
 			this.volumeT.TabIndex = 5;
@@ -107,25 +108,6 @@
 			this.album.Size = new System.Drawing.Size(154, 135);
 			this.album.TabIndex = 6;
 			this.album.TabStop = false;
-			// 
-			// playlist
-			// 
-			this.playlist.Activation = System.Windows.Forms.ItemActivation.TwoClick;
-			this.playlist.AllowDrop = true;
-			this.playlist.AutoArrange = false;
-			this.playlist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Title});
-			this.playlist.Location = new System.Drawing.Point(193, 13);
-			this.playlist.MultiSelect = false;
-			this.playlist.Name = "playlist";
-			this.playlist.Size = new System.Drawing.Size(200, 222);
-			this.playlist.TabIndex = 8;
-			this.playlist.UseCompatibleStateImageBehavior = false;
-			this.playlist.View = System.Windows.Forms.View.List;
-			// 
-			// Title
-			// 
-			this.Title.Width = 219;
 			// 
 			// nbut
 			// 
@@ -149,11 +131,22 @@
 			this.pbut.UseVisualStyleBackColor = true;
 			this.pbut.Click += new System.EventHandler(this.previous);
 			// 
+			// playlist
+			// 
+			this.playlist.AllowDrop = true;
+			this.playlist.FormattingEnabled = true;
+			this.playlist.Location = new System.Drawing.Point(176, 13);
+			this.playlist.Name = "playlist";
+			this.playlist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.playlist.Size = new System.Drawing.Size(141, 134);
+			this.playlist.TabIndex = 9;
+			this.playlist.DoubleClick += new System.EventHandler(this.change);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(405, 333);
+			this.ClientSize = new System.Drawing.Size(952, 543);
 			this.Controls.Add(this.playlist);
 			this.Controls.Add(this.album);
 			this.Controls.Add(this.volumeT);
@@ -181,10 +174,9 @@
         private System.Windows.Forms.OpenFileDialog file;
 		private System.Windows.Forms.Label volumeT;
 		private System.Windows.Forms.PictureBox album;
-		private System.Windows.Forms.ListView playlist;
-		private System.Windows.Forms.ColumnHeader Title;
 		private System.Windows.Forms.Button nbut;
 		private System.Windows.Forms.Button pbut;
+		private System.Windows.Forms.ListBox playlist;
 	}
 }
 
