@@ -46,7 +46,7 @@
 			// seek
 			// 
 			this.seek.Enabled = false;
-			this.seek.Location = new System.Drawing.Point(212, 402);
+			this.seek.Location = new System.Drawing.Point(177, 402);
 			this.seek.Maximum = 100;
 			this.seek.Name = "seek";
 			this.seek.Orientation = System.Windows.Forms.Orientation.Vertical;
@@ -91,12 +91,12 @@
 			// 
 			this.file.Filter = "Audio files|*.mp3;*.aac;*.wma;*.wav;*.m4a;";
 			this.file.Multiselect = true;
-			this.file.Title = "Select MP3 File";
+			this.file.Title = "Select Audio File";
 			// 
 			// volumeT
 			// 
 			this.volumeT.Enabled = false;
-			this.volumeT.Location = new System.Drawing.Point(241, 433);
+			this.volumeT.Location = new System.Drawing.Point(206, 433);
 			this.volumeT.Name = "volumeT";
 			this.volumeT.Size = new System.Drawing.Size(36, 23);
 			this.volumeT.TabIndex = 5;
@@ -138,9 +138,10 @@
 			this.playlist.FormattingEnabled = true;
 			this.playlist.Location = new System.Drawing.Point(335, 12);
 			this.playlist.Name = "playlist";
-			this.playlist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.playlist.Size = new System.Drawing.Size(305, 537);
 			this.playlist.TabIndex = 9;
+			this.playlist.DragDrop += new System.Windows.Forms.DragEventHandler(this.open);
+			this.playlist.DragEnter += new System.Windows.Forms.DragEventHandler(this.dragEnter);
 			this.playlist.DoubleClick += new System.EventHandler(this.change);
 			// 
 			// Form1
@@ -158,6 +159,9 @@
 			this.Controls.Add(this.ppbut);
 			this.Controls.Add(this.seek);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(668, 605);
+			this.MinimumSize = new System.Drawing.Size(668, 605);
 			this.Name = "Form1";
 			this.Text = "Music Player";
 			((System.ComponentModel.ISupportInitialize)(this.seek)).EndInit();
