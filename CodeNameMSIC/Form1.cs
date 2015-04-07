@@ -51,7 +51,18 @@ namespace CodeNameMSIC
 			}
 		}
 
-        private void open(object sender, EventArgs e)
+		private void initAudio()
+		{
+			playlist.SelectedIndex = current;
+			audioFileReader = new AudioFileReader(files.ToArray()[current]);
+			TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
+			if (f.Tag.Title != null) Text = f.Tag.Title + " - Music Player";
+			else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1) + " - Music Player";
+			if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
+			waveOutDevice.Init(audioFileReader);
+		}
+
+		private void open(object sender, EventArgs e)
         {
 			DialogResult res = file.ShowDialog();
 			if (res==DialogResult.OK)
@@ -99,15 +110,83 @@ namespace CodeNameMSIC
 			}
         }
 
-		private void initAudio()
+		private void open(object sender, DragEventArgs e)
 		{
-			playlist.SelectedIndex = current;
-			audioFileReader = new AudioFileReader(files.ToArray()[current]);
-			TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
-			if (f.Tag.Title != null) Text = f.Tag.Title + " - Music Player";
-			else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1) + " - Music Player";
-			if (f.Tag.Pictures.Length > 0) album.Image = Image.FromStream(new MemoryStream(f.Tag.Pictures[0].Data.Data)).GetThumbnailImage(album.Width, album.Height, null, IntPtr.Zero);
-			waveOutDevice.Init(audioFileReader);
+			string[] dragFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (dragFiles != null)
+			{
+				try
+				{
+					if (files.Count > 0)
+					{
+						foreach (string fileN in dragFiles)
+						{
+							string ext = fileN.Substring(fileN.Length - 4, 4);
+							if (ext != ".mp3" && ext != ".wav" && ext != ".wma" && ext != ".m4a") continue;
+							for (int i = 0; i < files.Count; ++i)
+							{
+								if (fileN != files.ToArray()[i] && i == files.Count - 1)
+								{
+									if (TagLib.File.Create(fileN).Tag.Title != null) playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
+									else playlist.Items.Add(fileN.Substring(fileN.LastIndexOf('\\') + 1));
+									files.Add(fileN);
+								}
+								else if (fileN == files.ToArray()[i] || i == files.Count) break;
+							}
+						}
+					}
+					else
+					{
+						foreach (string fileN in dragFiles)
+						{
+							string ext = fileN.Substring(fileN.Length - 4, 4);
+							if (ext != ".mp3" && ext != ".wav" && ext != ".wma" && ext != ".m4a") continue;
+							if (TagLib.File.Create(fileN).Tag.Title != null) playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
+							else playlist.Items.Add(fileN.Substring(fileN.LastIndexOf('\\') + 1));
+							files.Add(fileN);
+						}
+					}
+					if (waveOutDevice.PlaybackState == PlaybackState.Stopped && files.Count > 0)
+					{
+						initAudio();
+						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
+					}
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					files.RemoveAt(current);
+					playlist.Items.RemoveAt(current);
+					if (current > 0) --current;
+				}
+			}
+		}
+
+		private void toggle(object sender, EventArgs e)
+		{
+			audioFileReader.Position = 0;
+			ppbut.Image = Properties.Resources._1428006213_208018;
+		}
+
+		private void stop(object sender, EventArgs e)
+		{
+			waveOutDevice.Stop();
+			audioFileReader.Position = 0;
+			ppbut.Image = Properties.Resources._1428006213_208018;
+		}
+
+		private void play(object sender, EventArgs e)
+		{
+			if (waveOutDevice.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+			{
+				waveOutDevice.Pause();
+				ppbut.Image = Properties.Resources._1428006213_208018;
+			}
+			else
+			{
+				waveOutDevice.Play();
+				ppbut.Image = Properties.Resources._1428006230_208019;
+			}
 		}
 
 		private void next(object sender, EventArgs e)
@@ -128,39 +207,6 @@ namespace CodeNameMSIC
 				if (current > 0) --current;
 			}
 		}
-
-		private void play(object sender, EventArgs e)
-        {
-            if (waveOutDevice.PlaybackState == NAudio.Wave.PlaybackState.Playing)
-            {
-                waveOutDevice.Pause();
-				ppbut.Image = Properties.Resources._1428006213_208018;
-            }
-            else
-            {
-                waveOutDevice.Play();
-				ppbut.Image = Properties.Resources._1428006230_208019;
-			}
-		}
-
-		private void toggle(object sender, EventArgs e)
-		{
-			audioFileReader.Position = 0;
-			ppbut.Image = Properties.Resources._1428006213_208018;
-		}
-
-        private void stop(object sender, EventArgs e)
-        {
-            waveOutDevice.Stop();
-            audioFileReader.Position = 0;
-			ppbut.Image = Properties.Resources._1428006213_208018;
-		}
-
-        private void seekTo(object sender, EventArgs e)
-        {
-            waveOutDevice.Volume = ((float)seek.Value)/100;
-			volumeT.Text = (waveOutDevice.Volume*100).ToString()+"%";
-        }
 
 		private void previous(object sender, EventArgs e)
 		{
@@ -201,57 +247,11 @@ namespace CodeNameMSIC
 				}
 			}
 		}
-		
-		private void open(object sender, DragEventArgs e)
+
+		private void seekTo(object sender, EventArgs e)
 		{
-			string[] dragFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (dragFiles != null)
-			{
-				try
-				{
-					if (files.Count > 0)
-					{
-						foreach (string fileN in dragFiles)
-						{
-							string ext = fileN.Substring(fileN.Length - 4, 4);
-							if (ext != ".mp3" && ext != ".wav" && ext != ".wma" && ext != ".m4a") continue;
-							for (int i = 0; i < files.Count; ++i)
-							{
-								if (fileN != files.ToArray()[i] && i == files.Count - 1)
-								{
-									if (TagLib.File.Create(fileN).Tag.Title != null) playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
-									else playlist.Items.Add(fileN.Substring(fileN.LastIndexOf('\\') + 1));
-									files.Add(fileN);
-								}
-								else if (fileN == files.ToArray()[i] || i == files.Count) break;
-							}
-						}
-					}
-					else
-					{
-						foreach (string fileN in dragFiles)
-						{
-							string ext = fileN.Substring(fileN.Length - 4, 4);
-							if (ext != ".mp3" && ext != ".wav" && ext != ".wma" && ext != ".m4a") continue;
-							if (TagLib.File.Create(fileN).Tag.Title != null) playlist.Items.Add(TagLib.File.Create(fileN).Tag.Title);
-							else playlist.Items.Add(fileN.Substring(fileN.LastIndexOf('\\') + 1));
-							files.Add(fileN);
-						}
-					}
-					if (waveOutDevice.PlaybackState == PlaybackState.Stopped && files.Count>0)
-					{
-						initAudio();
-						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
-					}
-				}
-				catch (Exception err)
-				{
-					MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-					files.RemoveAt(current);
-					playlist.Items.RemoveAt(current);
-					if (current > 0) --current;
-				}
-			}
+			waveOutDevice.Volume = ((float)seek.Value) / 100;
+			volumeT.Text = (waveOutDevice.Volume * 100).ToString() + "%";
 		}
 
 		void dragEnter(object sender, DragEventArgs e)
