@@ -23,14 +23,12 @@ namespace CodeNameMSIC
         public Form1()
         {
             InitializeComponent();
-            seek.Value = (int)(100*waveOutDevice.Volume);
 			waveOutDevice.PlaybackStopped += toggle;
         }
 
 		public Form1(string[] initialFiles)
 		{
 			InitializeComponent();
-			seek.Value = (int)(100 * waveOutDevice.Volume);
 			waveOutDevice.PlaybackStopped += toggle;
 			foreach (string initialFile in initialFiles)
 			{
@@ -47,7 +45,7 @@ namespace CodeNameMSIC
 			{
 				initAudio();
 				play(new object(), new EventArgs());
-				ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
+				ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = volumeV.Enabled = volumeT.Enabled = true;
 			}
 		}
 
@@ -55,6 +53,7 @@ namespace CodeNameMSIC
 		{
 			playlist.SelectedIndex = current;
 			audioFileReader = new AudioFileReader(files.ToArray()[current]);
+			volumeV.Value = (int)audioFileReader.Volume * 100;
 			TagLib.File f = TagLib.File.Create(files.ToArray()[current]);
 			if (f.Tag.Title != null) Text = f.Tag.Title + " - Music Player";
 			else Text = files.ToArray()[current].Substring(files.ToArray()[current].LastIndexOf('\\') + 1) + " - Music Player";
@@ -97,7 +96,7 @@ namespace CodeNameMSIC
 					if (waveOutDevice.PlaybackState == PlaybackState.Stopped)
 					{
 						initAudio();
-						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
+						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = volumeV.Enabled = volumeT.Enabled = true;
 					}
 				}
 				catch (Exception err)
@@ -149,7 +148,7 @@ namespace CodeNameMSIC
 					if (waveOutDevice.PlaybackState == PlaybackState.Stopped && files.Count > 0)
 					{
 						initAudio();
-						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = seek.Enabled = volumeT.Enabled = true;
+						ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = volumeV.Enabled = volumeT.Enabled = true;
 					}
 				}
 				catch (Exception err)
@@ -171,8 +170,6 @@ namespace CodeNameMSIC
 		private void stop(object sender, EventArgs e)
 		{
 			waveOutDevice.Stop();
-			audioFileReader.Position = 0;
-			ppbut.Image = Properties.Resources._1428006213_208018;
 		}
 
 		private void play(object sender, EventArgs e)
@@ -193,9 +190,11 @@ namespace CodeNameMSIC
 		{
 			if (current == files.ToArray().Length - 1) current = 0;
 			else ++current;
-			stop(new object(), new EventArgs());
+			waveOutDevice.Stop();
 			try
 			{
+				waveOutDevice.Dispose();
+				audioFileReader.Dispose();
 				initAudio();
 				play(new object(), new EventArgs());
 			}
@@ -212,9 +211,11 @@ namespace CodeNameMSIC
 		{
 			if (current == 0) current = files.ToArray().Length - 1;
 			else --current;
-			stop(new object(), new EventArgs());
+			waveOutDevice.Stop();
 			try
 			{
+				waveOutDevice.Dispose();
+				audioFileReader.Dispose();
 				initAudio();
 				play(new object(), new EventArgs());
 			}
@@ -232,9 +233,11 @@ namespace CodeNameMSIC
 			if (playlist.Items.Count > 0)
 			{
 				current = playlist.SelectedIndex;
-				stop(new object(), new EventArgs());
+				waveOutDevice.Stop();
 				try
 				{
+					waveOutDevice.Dispose();
+					audioFileReader.Dispose();
 					initAudio();
 					play(new object(), new EventArgs());
 				}
@@ -248,15 +251,16 @@ namespace CodeNameMSIC
 			}
 		}
 
-		private void seekTo(object sender, EventArgs e)
+		private void volume(object sender, EventArgs e)
 		{
-			waveOutDevice.Volume = ((float)seek.Value) / 100;
-			volumeT.Text = (waveOutDevice.Volume * 100).ToString() + "%";
+			audioFileReader.Volume = ((float)volumeV.Value) / 100;
+			volumeT.Text = (audioFileReader.Volume * 100).ToString() + "%";
 		}
 
 		void dragEnter(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
 		}
+		
 	}
 }
