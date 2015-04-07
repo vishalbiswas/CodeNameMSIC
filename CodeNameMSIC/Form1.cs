@@ -43,9 +43,19 @@ namespace CodeNameMSIC
 			}
 			if (files.Count > 0)
 			{
-				initAudio();
-				play(new object(), new EventArgs());
-				ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = volumeV.Enabled = volumeT.Enabled = true;
+				try
+				{
+					initAudio();
+					play(new object(), new EventArgs());
+					ppbut.Enabled = button3.Enabled = pbut.Enabled = nbut.Enabled = volumeV.Enabled = volumeT.Enabled = true;
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message, err.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					files.RemoveAt(current);
+					playlist.Items.RemoveAt(current);
+					if (current > 0) --current;
+				}
 			}
 		}
 
@@ -174,7 +184,7 @@ namespace CodeNameMSIC
 
 		private void play(object sender, EventArgs e)
 		{
-			if (waveOutDevice.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+			if (waveOutDevice.PlaybackState == PlaybackState.Playing)
 			{
 				waveOutDevice.Pause();
 				ppbut.Image = Properties.Resources._1428006213_208018;
@@ -261,6 +271,5 @@ namespace CodeNameMSIC
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
 		}
-		
 	}
 }
